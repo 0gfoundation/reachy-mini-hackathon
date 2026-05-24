@@ -20,9 +20,12 @@ Organizing materials for a **hackathon where teams build apps for the Reachy Min
 The Reachy Mini SDK is in active beta; CLI flags and service names shift between releases. Treat the below as the working model, but check the live docs/`--help` when something doesn't match.
 
 **Development model**
-- SDK: `reachy-mini` (Python 3.10+). Simulator uses MuJoCo: `pip install reachy-mini[mujoco]`.
+- SDK: `reachy-mini` (Python 3.10+). Simulator uses MuJoCo: `pip install "reachy-mini[mujoco]"`.
 - **Sim ↔ hardware parity is the core principle**: the same `ReachyMini()` code runs against the simulator and the real robot unchanged. Build in sim, deploy to hardware.
-- macOS gotchas: use **`mjpython`** (not `python`) to launch the sim GUI; use **`pip`, not `uv`**, for MuJoCo packages.
+- **Cross-platform**: Linux, macOS, and **native Windows** are all supported (no WSL required).
+- Daemon entry point: `reachy-mini-daemon --sim` on Linux/Windows. macOS needs `mjpython -m reachy_mini.daemon.app.main --sim` for the GUI.
+- macOS gotchas: use **`pip`, not `uv`**, for MuJoCo packages — `uv` has known MuJoCo compatibility issues on macOS. `uv` is fine on Linux/Windows.
+- Windows gotchas: PowerShell may need `Set-ExecutionPolicy RemoteSigned` (one-time, Admin) to run venv `Activate.ps1`. `.local` mDNS usually needs Bonjour installed; prefer the IP.
 - AI agents can bootstrap by reading `https://github.com/pollen-robotics/reachy_mini/blob/main/AGENTS.md` (the repo's `skills/` dir has app-building guides).
 
 **Architecture**
@@ -45,6 +48,8 @@ The Reachy Mini SDK is in active beta; CLI flags and service names shift between
 - Keep them **short and scannable** — these are used live, under time pressure.
 - The judging rubric is deliberately fast (~2 min/team); don't add criteria without removing others.
 - Fill bracketed/blank values (robot IP, etc.) before the event rather than hardcoding guesses.
+- **Code-block format**: every installation/setup snippet must be a **single-line fenced code block with no inline comments**, so GitHub's copy button produces a clean copy. Put OS/shell labels and explanations in **prose above** the block, not as `# Linux:` comments inside it. When the same step differs by OS or shell, give one block per variant (e.g., a separate block each for bash, PowerShell, cmd) rather than combining them.
+- Cover **Linux, macOS, and native Windows** for all setup instructions. Use the correct shell syntax per OS (`source venv/bin/activate` vs `venv\Scripts\Activate.ps1`; `$VAR` vs `$env:VAR` vs `%VAR%`).
 
 ## Keeping AGENTS.md and CLAUDE.md in sync
 

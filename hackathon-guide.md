@@ -8,25 +8,53 @@ Works on **Linux, macOS, and native Windows** (no WSL required). Python 3.10+ ev
 
 ## 1. Set up the simulator
 
-Create and activate a fresh virtualenv, then install the SDK + MuJoCo extra:
+### A. Create and activate a virtualenv
 
-| OS | Activate venv | Install |
-|---|---|---|
-| **Linux / macOS** | `source venv/bin/activate` | `pip install "reachy-mini[mujoco]"` |
-| **Windows (PowerShell)** | `venv\Scripts\Activate.ps1` | `uv pip install "reachy-mini[mujoco]"` |
-
-> **Per-OS gotchas:**
-> - **macOS:** use **`pip`, not `uv`** — `uv` has known MuJoCo compatibility issues on macOS.
-> - **Windows:** if PowerShell blocks the activate script, run once as Admin: `Set-ExecutionPolicy RemoteSigned`.
-> - **Linux:** `pip` or `uv` both fine.
-
-**Start the daemon** (keep this terminal open):
+**Linux / macOS:**
 
 ```bash
-# Linux / Windows:
-reachy-mini-daemon --sim
+python3 -m venv venv
+```
 
-# macOS (needs mjpython for the GUI):
+```bash
+source venv/bin/activate
+```
+
+**Windows (PowerShell)** — if activation is blocked, run once as Admin: `Set-ExecutionPolicy RemoteSigned`.
+
+```powershell
+python -m venv venv
+```
+
+```powershell
+venv\Scripts\Activate.ps1
+```
+
+### B. Install the SDK with the MuJoCo extra
+
+**Linux / macOS** — use `pip`. On macOS, `uv` has known MuJoCo compatibility issues, so avoid it here too.
+
+```bash
+pip install "reachy-mini[mujoco]"
+```
+
+**Windows (PowerShell)** — `uv` works fine.
+
+```powershell
+uv pip install "reachy-mini[mujoco]"
+```
+
+### C. Start the daemon (keep this terminal open)
+
+**Linux / Windows:**
+
+```bash
+reachy-mini-daemon --sim
+```
+
+**macOS** — needs `mjpython` to drive the GUI.
+
+```bash
 mjpython -m reachy_mini.daemon.app.main --sim
 ```
 
@@ -70,11 +98,14 @@ To deploy to the robot, structure your project as a **Reachy Mini app** (subclas
 
 - `huggingface.co/spaces/pollen-robotics/reachy_mini_template_app`
 
-Test it locally against the sim:
+Install the project in editable mode, then validate it against the sim:
 
 ```bash
 pip install -e .
-reachy-mini-app-assistant check   # validates your app
+```
+
+```bash
+reachy-mini-app-assistant check
 ```
 
 ---
@@ -83,16 +114,23 @@ reachy-mini-app-assistant check   # validates your app
 
 > ⚠️ **Do this on day one.** Requires a Hugging Face account + a **write token**. This is the #1 day-of blocker.
 
-Log in with your token (syntax differs by shell):
+Log in with your token. The env-var syntax differs by shell:
+
+**Linux / macOS (bash / zsh):**
 
 ```bash
-# Linux / macOS (bash/zsh):
 hf auth login --token $HF_TOKEN --add-to-git-credential
+```
 
-# Windows (PowerShell):
+**Windows (PowerShell):**
+
+```powershell
 hf auth login --token $env:HF_TOKEN --add-to-git-credential
+```
 
-# Windows (cmd):
+**Windows (cmd):**
+
+```cmd
 hf auth login --token %HF_TOKEN% --add-to-git-credential
 ```
 
