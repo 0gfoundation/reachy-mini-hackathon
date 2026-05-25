@@ -4,51 +4,28 @@ Guidance for AI coding agents (and humans) working in this repo. Portable across
 
 ## What this repo is
 
-Organizing materials for a **hackathon where teams build apps for the Reachy Mini robot that integrate with the 0G stack** (Chain, Compute, Storage). This repo holds the run-of-show docs, not application code. The event has **one physical Reachy Mini (Wireless)**; many teams develop in simulation and deploy to that single robot during demos.
+Run-of-show docs for a hackathon where teams build apps for the **Reachy Mini robot** that integrate with the **0G stack** (Chain, Compute, Storage). This repo is **docs only — no application code**. One physical Reachy Mini (Wireless) on site; most teams build in simulation and deploy at demo time.
 
-## Contents
+## Where to find what
 
-| File | Purpose |
+This repo is content, not code. Before answering a technical question or making edits, **read the relevant doc** — its content is authoritative; this file is just a map.
+
+| File | Read it for… |
 |---|---|
-| `hackathon-guide.md` | Attendee setup sheet — sim install, first script, app publishing, deployment. |
+| `hackathon-guide.md` | Attendee setup. Section 0 = 0G key prep (the #1 day-of blocker). Section 1A = JS / WebRTC path. Section 1B = Python / on-robot path. Plus publishing + deployment + demo-day rules. |
+| `starter-snippets.md` | Working 0G API helpers (chat, Whisper STT) for JS and Python, plus a reference implementation Space. |
 | `demo-station.md` | Operator card for whoever runs the robot during demos — queue, stop/reset, fixes. |
 | `judging-rubric.md` | Fast 0G-centered scoring sheet (out of 25). |
 | `project-inspiration.md` | 1–2 day project ideas, grouped by 0G service. |
 
-## Key technical facts (verify against current beta before relying on these)
-
-The Reachy Mini SDK is in active beta; CLI flags and service names shift between releases. Treat the below as the working model, but check the live docs/`--help` when something doesn't match.
-
-**Development model**
-- SDK: `reachy-mini` (Python 3.10+). Simulator uses MuJoCo: `pip install "reachy-mini[mujoco]"`.
-- **Sim ↔ hardware parity is the core principle**: the same `ReachyMini()` code runs against the simulator and the real robot unchanged. Build in sim, deploy to hardware.
-- **Cross-platform**: Linux, macOS, and **native Windows** are all supported (no WSL required).
-- Daemon entry point: `reachy-mini-daemon --sim` on Linux/Windows. macOS needs `mjpython -m reachy_mini.daemon.app.main --sim` for the GUI.
-- macOS gotchas: use **`pip`, not `uv`**, for MuJoCo packages — `uv` has known MuJoCo compatibility issues on macOS. `uv` is fine on Linux/Windows.
-- Windows gotchas: PowerShell may need `Set-ExecutionPolicy RemoteSigned` (one-time, Admin) to run venv `Activate.ps1`. `.local` mDNS usually needs Bonjour installed; prefer the IP.
-- AI agents can bootstrap by reading `https://github.com/pollen-robotics/reachy_mini/blob/main/AGENTS.md` (the repo's `skills/` dir has app-building guides).
-
-**Architecture**
-- A **daemon** (FastAPI server on port 8000) bridges code and hardware. On **Wireless**, it runs onboard the Raspberry Pi and is reachable at `http://reachy-mini.local:8000` (or the robot's IP). On **Lite**, it runs on the host computer at `localhost:8000`.
-- REST API at `/api`; interactive Swagger at `/docs`.
-- **Apps**: subclass `ReachyMiniApp`, exit via the provided `stop_event`. Created/packaged with the `reachy-mini-app-assistant` CLI, **published to a Hugging Face Space** (requires a HF account + write token), then **installed onto the robot via the dashboard** ("Install to Robot" → enter dashboard URL) or REST.
-- **Only one app runs at a time.** The daemon launches the app as a subprocess; on stop it sends SIGINT and **returns the robot to its default pose** automatically.
-- Hardware exposes: head pose, antennas, camera, microphones, speakers.
-
-**The 0G angle (this event's whole point)**
-- Projects must meaningfully use ≥1 of: **0G Compute** (decentralized/TEE LLM + vision inference), **0G Storage** (persistent memory, media, behavior libraries), **0G Chain** (agent identity / iNFTs, ownership, micro-payments).
-- Common patterns: Compute for the robot's conversation/vision, Storage for agent memory, Chain for identity or pay-per-interaction.
-
-## Demo-day operational notes
-- Get the robot on a **controlled network** (bring a travel router / dedicated SSID). Venue Wi-Fi often blocks client-to-client traffic and breaks `.local` mDNS resolution — fall back to the robot's IP.
-- macOS clients may need Local Network permission (System Settings → Privacy & Security → Local Network).
-- Reset ladder when stuck: dashboard **Stop** → restart daemon → SSH (`root@reachy-mini.local`) `systemctl restart reachy-mini-daemon` → power-cycle.
+For Reachy Mini SDK questions, go upstream: `github.com/pollen-robotics/reachy_mini`. Pollen's own [AGENTS.md](https://github.com/pollen-robotics/reachy_mini/blob/main/AGENTS.md) is the source of truth for SDK conventions (e.g. JS as the default app path, Python for on-robot/hardware work). The SDK is in active beta — verify against live docs/`--help` when something doesn't match.
 
 ## Conventions for editing these docs
-- Keep them **short and scannable** — these are used live, under time pressure.
+
+- Keep them **short and scannable** — they're used live, under time pressure.
 - The judging rubric is deliberately fast (~2 min/team); don't add criteria without removing others.
 - Fill bracketed/blank values (robot IP, etc.) before the event rather than hardcoding guesses.
-- **Code-block format**: every installation/setup snippet must be a **single-line fenced code block with no inline comments**, so GitHub's copy button produces a clean copy. Put OS/shell labels and explanations in **prose above** the block, not as `# Linux:` comments inside it. When the same step differs by OS or shell, give one block per variant (e.g., a separate block each for bash, PowerShell, cmd) rather than combining them.
+- **Code-block format**: every installation/setup snippet must be a **single-line fenced code block with no inline comments**, so GitHub's copy button produces a clean copy. Put OS/shell labels and explanations in **prose above** the block, not as `# Linux:` comments inside it. When the same step differs by OS or shell, give one block per variant (e.g., separate blocks for bash, PowerShell, cmd).
 - Cover **Linux, macOS, and native Windows** for all setup instructions. Use the correct shell syntax per OS (`source venv/bin/activate` vs `venv\Scripts\Activate.ps1`; `$VAR` vs `$env:VAR` vs `%VAR%`).
 
 ## Keeping AGENTS.md and CLAUDE.md in sync
