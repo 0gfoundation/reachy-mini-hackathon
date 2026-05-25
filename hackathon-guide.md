@@ -4,7 +4,14 @@ Develop against a **simulator**, then deploy to the **one physical Reachy Mini (
 
 Works on **Linux, macOS, and native Windows** (no WSL required).
 
-**Contents:** [Pick your path](#-pick-your-path) · [1. Get 0G API keys](#1-get-your-0g-api-keys-do-this-before-the-event) · [2A. JS path](#2a-path-a--js--static-web-app) · [2B. Python path](#2b-path-b--python-on-robot) · [3. AI coding agent](#3-using-an-ai-coding-agent-bootstrap-instantly) · [Demo-day rules](#-demo-day-rules)
+**Contents:**
+
+- [Pick your path](#-pick-your-path)
+- [1. Get 0G API keys](#1-get-your-0g-api-keys-do-this-before-the-event)
+- [2A. JS path](#2a-path-a--js--static-web-app)
+- [2B. Python path](#2b-path-b--python-on-robot)
+- [3. AI coding agent](#3-using-an-ai-coding-agent-bootstrap-instantly)
+- [Demo-day rules](#-demo-day-rules)
 
 ---
 
