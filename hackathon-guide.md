@@ -4,6 +4,8 @@ Develop against a **simulator**, then deploy to the **one physical Reachy Mini (
 
 Works on **Linux, macOS, and native Windows** (no WSL required).
 
+**Contents:** [Pick your path](#-pick-your-path) · [1. Get 0G API keys](#1-get-your-0g-api-keys-do-this-before-the-event) · [2A. JS path](#2a-path-a--js--static-web-app) · [2B. Python path](#2b-path-b--python-on-robot) · [3. AI coding agent](#3-using-an-ai-coding-agent-bootstrap-instantly) · [Demo-day rules](#-demo-day-rules)
+
 ---
 
 ## 🛤️ Pick your path
@@ -22,11 +24,11 @@ Two ways to build a Reachy Mini app. Pick one and stick with it. Most teams shou
 
 > Pollen's own [AGENTS.md](https://github.com/pollen-robotics/reachy_mini/blob/main/AGENTS.md) says: **"Default to a JS/Web app unless you explicitly need on-robot Python."** Static HF Spaces are zero-install, mobile-friendly, and the same URL works on any laptop at the venue.
 
-Skip to **[Section 1A](#1a-path-a--js-static-web-app)** for the JS path, or **[Section 1B](#1b-path-b--python-on-robot)** for Python.
+Skip to **[Section 2A](#2a-path-a--js--static-web-app)** for the JS path, or **[Section 2B](#2b-path-b--python-on-robot)** for Python.
 
 ---
 
-## 0. Get your 0G API keys (do this BEFORE the event)
+## 1. Get your 0G API keys (do this BEFORE the event)
 
 **This is the #1 day-of blocker.** 0G's Compute marketplace uses **per-provider API keys in Direct mode** — one `app-sk-…` per model you call. The chat key won't work for Whisper, and neither will work without a funded sub-account.
 
@@ -73,9 +75,9 @@ curl -sS https://compute-network-1.integratenetwork.work/v1/proxy/chat/completio
 
 ---
 
-## 1A. Path A — JS / Static Web App
+## 2A. Path A — JS / Static Web App
 
-### Step 1: Clone the template
+### A. Clone the template
 
 The canonical JS template is the WebRTC example Space:
 
@@ -86,7 +88,7 @@ cd my-reachy-app
 
 For a production-grade reference that already wires 0G chat, Whisper STT, TTS, and a 3D simulator — see **[`gathint/reachy-blocks`](https://huggingface.co/spaces/gathint/reachy-blocks)**. Forking that is the fastest way to ship.
 
-### Step 2: Pin the SDK version
+### B. Pin the SDK version
 
 In `index.html`, the SDK is imported from jsdelivr. **Pin to a version tag**, never `@main`:
 
@@ -98,7 +100,7 @@ In `index.html`, the SDK is imported from jsdelivr. **Pin to a version tag**, ne
 
 Check the latest tag: `git ls-remote --tags https://github.com/pollen-robotics/reachy_mini | grep -E 'v[0-9]' | tail`.
 
-### Step 3: Local dev
+### C. Local dev
 
 Serve over HTTP (not `file://`):
 
@@ -108,11 +110,11 @@ python3 -m http.server 8765
 
 Open `http://localhost:8765/?hf=<your-read-token>`. **Important:** the JS SDK does **not** auto-read the `?hf=` URL param — `authenticate()` only checks OAuth callbacks and sessionStorage. You must parse it yourself and pass to `robot.connect(token)`. Reachy Blocks has this pattern; copy it.
 
-### Step 4: Run against the on-stage robot
+### D. Run against the on-stage robot
 
 When connected to venue Wi-Fi, the SDK auto-discovers the robot via the relay. The same code runs against the on-stage Wireless without changes.
 
-### Step 5: Publish to a HF Space (do this day one)
+### E. Publish to a HF Space (do this day one)
 
 Create a static Space at https://huggingface.co/new-space (SDK: Static), then:
 
@@ -132,7 +134,7 @@ Your app is now at `https://<your-user>-<your-app>.static.hf.space/` — share t
 
 ---
 
-## 1B. Path B — Python (on-robot)
+## 2B. Path B — Python (on-robot)
 
 ### A. Create and activate a virtualenv
 
@@ -249,7 +251,7 @@ mini = ReachyMini(connection_mode="network")
 
 ---
 
-## 2. Using an AI coding agent? Bootstrap instantly
+## 3. Using an AI coding agent? Bootstrap instantly
 
 On **Claude Code, Cursor, Codex, or Copilot**, paste this to get your agent building correctly from the start:
 

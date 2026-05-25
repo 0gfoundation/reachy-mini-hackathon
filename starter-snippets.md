@@ -1,8 +1,8 @@
 # 📋 0G x Reachy Starter Snippets
 
-Copy-paste helpers that hit 0G Compute correctly the first time. Pair these with the [hackathon guide](hackathon-guide.md) and the API key setup (Section 0).
+Copy-paste helpers that hit 0G Compute correctly the first time. Pair these with the [hackathon guide](hackathon-guide.md) and the API key setup (Section 1).
 
-> All snippets assume you've completed **[Section 0 of the hackathon guide](hackathon-guide.md#0-get-your-0g-api-keys-do-this-before-the-event)**: funded provider sub-accounts and minted per-provider `app-sk-…` keys.
+> All snippets assume you've completed **[Section 1 of the hackathon guide](hackathon-guide.md#1-get-your-0g-api-keys-do-this-before-the-event)**: funded provider sub-accounts and minted per-provider `app-sk-…` keys.
 
 ---
 
