@@ -276,11 +276,11 @@ https://github.com/0gfoundation/reachy-mini-hackathon/blob/main/hackathon-guide.
 
 ### Handy links
 
-- SDK + docs: `github.com/pollen-robotics/reachy_mini`
-- Pollen's AGENTS.md (load into your coding agent): `github.com/pollen-robotics/reachy_mini/blob/main/AGENTS.md`
-- Publishing walkthrough: "Make and Publish Your Reachy Mini Apps" (Pollen Robotics blog)
-- Community apps: Hugging Face Spaces → Reachy Mini
+- SDK: [github.com/pollen-robotics/reachy_mini](https://github.com/pollen-robotics/reachy_mini)
+- Docs: [huggingface.co/docs/reachy_mini](https://huggingface.co/docs/reachy_mini)
+- Pollen's [AGENTS.md](https://github.com/pollen-robotics/reachy_mini/blob/main/AGENTS.md) (load into your coding agent)
+- Publishing walkthrough: [Make and Publish Your Reachy Mini Apps](https://huggingface.co/blog/pollen-robotics/make-and-publish-your-reachy-mini-apps) (Pollen Robotics blog)
+- Community apps: [Reachy Mini Spaces](https://huggingface.co/spaces/pollen-robotics/Reachy_Mini)
 - 0G compute marketplace: https://pc.0g.ai
-- Working 0G x Reachy reference: [`gathint/reachy-blocks`](https://huggingface.co/spaces/gathint/reachy-blocks)
 
 **Have fun — build something weird and expressive. 👋**
