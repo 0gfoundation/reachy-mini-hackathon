@@ -48,6 +48,8 @@ Skip to **[Section 2A](#2a-path-a--js--static-web-app)** for the JS path, or **[
    - **Vision / image**: `qwen/qwen3-vl-30b-a3b-instruct`, `z-image`.
 3. Click into each provider you want → deposit at least **1 0G** to that provider's sub-account. **Each model = its own deposit.** A balance on the chat provider does NOT cover Whisper.
 
+> 💧 **Testing on testnet?** Grab free 0G tokens from the faucet at [faucet.0g.ai](https://faucet.0g.ai) — enough to fund a few provider sub-accounts for development.
+
 ### B. Mint per-provider API keys
 
 For every provider you funded, generate its `app-sk-…` token:
@@ -122,6 +124,8 @@ Open `http://localhost:8765/?hf=<your-read-token>`. **Important:** the JS SDK do
 When connected to venue Wi-Fi, the SDK auto-discovers the robot via the relay. The same code runs against the on-stage Wireless without changes.
 
 ### E. Publish to a HF Space (do this day one)
+
+> **Why required:** your Space stays live after the event — judges revisit, organizers showcase winners, and you keep a portfolio piece. It also unlocks one-click install on the robot and OAuth (`robot.login()`), which only works from `*.static.hf.space`.
 
 Create a static Space at https://huggingface.co/new-space (SDK: Static), then:
 
@@ -227,6 +231,8 @@ reachy-mini-app-assistant check
 ### F. Publish to a Hugging Face Space
 
 > ⚠️ **Do this day one.** Requires a Hugging Face account + a **write token**. This is the #1 day-of blocker.
+>
+> **Why required:** your Space stays live after the event — judges revisit, organizers showcase winners, and you keep a portfolio piece. It also unlocks the dashboard's one-click "Install to Robot" flow.
 
 Log in with your token:
 
