@@ -269,9 +269,11 @@ mini = ReachyMini(connection_mode="network")
 On **Claude Code, Cursor, Codex, or Copilot**, paste this to get your agent building correctly from the start:
 
 ```
-I'd like to create a Reachy Mini app. Start by reading
+I'd like to create a Reachy Mini app on the 0G stack. Start by reading
 https://github.com/pollen-robotics/reachy_mini/blob/main/AGENTS.md
-then check the 0G hackathon guide at
+then the 0G AI context at
+https://docs.0g.ai/ai-context
+then the 0G hackathon guide at
 https://github.com/0gfoundation/reachy-mini-hackathon/blob/main/hackathon-guide.md
 ```
 
@@ -296,6 +298,7 @@ https://github.com/0gfoundation/reachy-mini-hackathon/blob/main/hackathon-guide.
 - Pollen's [AGENTS.md](https://github.com/pollen-robotics/reachy_mini/blob/main/AGENTS.md) (load into your coding agent)
 - Publishing walkthrough: [Make and Publish Your Reachy Mini Apps](https://huggingface.co/blog/pollen-robotics/make-and-publish-your-reachy-mini-apps) (Pollen Robotics blog)
 - Community apps: [Reachy Mini Spaces](https://huggingface.co/spaces/pollen-robotics/Reachy_Mini)
+- 0G AI context (load into your coding agent): [docs.0g.ai/ai-context](https://docs.0g.ai/ai-context)
 - 0G compute marketplace: https://pc.0g.ai
 
 **Have fun — build something weird and expressive. 👋**
