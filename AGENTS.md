@@ -12,7 +12,7 @@ This repo is content, not code. Before answering a technical question or making 
 
 | File | Read it for… |
 |---|---|
-| `hackathon-guide.md` | Attendee setup. Section 0 = 0G key prep (the #1 day-of blocker). Section 1A = JS / WebRTC path. Section 1B = Python / on-robot path. Plus publishing + deployment + demo-day rules. |
+| `hackathon-guide.md` | Attendee setup. Sections 1A/1B = 0G key prep (GUI / CLI — the #1 day-of blocker). Section 2 = smoke-test keys. Section 3A = JS / WebRTC path. Section 3B = Python / on-robot path. Plus publishing, showcase, deployment, and demo-day rules. |
 | `starter-snippets.md` | Working 0G API helpers (chat, Whisper STT) for JS and Python, plus a reference implementation Space. |
 | `demo-station.md` | Operator card for whoever runs the robot during demos — queue, stop/reset, fixes. |
 | `judging-rubric.md` | Fast 0G-centered scoring sheet (out of 25). |

@@ -7,11 +7,13 @@ Works on **Linux, macOS, and native Windows** (no WSL required).
 **Contents:**
 
 - [Pick your path](#-pick-your-path)
-- [1. Get 0G API keys](#1-get-your-0g-api-keys-do-this-before-the-event)
-- [2A. JS path](#2a-path-a--js--static-web-app)
-- [2B. Python path](#2b-path-b--python-on-robot)
-- [3. Showcase your project](#3-showcase-your-project)
-- [4. AI coding agent](#4-using-an-ai-coding-agent-bootstrap-instantly)
+- [1A. Get 0G API keys (GUI)](#1a-get-your-0g-api-keys-gui-option)
+- [1B. Get 0G API keys (CLI)](#1b-get-your-0g-api-keys-cli-option)
+- [2. Test your 0G API keys](#2-test-your-0g-api-keys)
+- [3A. JS path](#3a-path-a--js--static-web-app)
+- [3B. Python path](#3b-path-b--python-on-robot)
+- [4. Showcase your project](#4-showcase-your-project)
+- [5. AI coding agent](#5-using-an-ai-coding-agent-bootstrap-instantly)
 - [Demo-day rules](#-demo-day-rules)
 
 ---
@@ -32,20 +34,49 @@ Two ways to build a Reachy Mini app. Pick one and stick with it. Most teams shou
 
 > Pollen's own [AGENTS.md](https://github.com/pollen-robotics/reachy_mini/blob/main/AGENTS.md) says: **"Default to a JS/Web app unless you explicitly need on-robot Python."** Static HF Spaces are zero-install, mobile-friendly, and the same URL works on any laptop at the venue.
 
-Skip to **[Section 2A](#2a-path-a--js--static-web-app)** for the JS path, or **[Section 2B](#2b-path-b--python-on-robot)** for Python.
+Skip to **[Section 3A](#3a-path-a--js--static-web-app)** for the JS path, or **[Section 3B](#3b-path-b--python-on-robot)** for Python.
 
 ---
 
-## 1. Get your 0G API keys (do this BEFORE the event)
+**Getting 0G API keys is the #1 day-of blocker.** 0G's Compute marketplace uses **per-provider API keys** — one `app-sk-…` per model you call. **You must mint the key in Advanced mode**.
 
-**This is the #1 day-of blocker.** 0G's Compute marketplace uses **per-provider API keys** — one `app-sk-…` per model you call. **You must mint the key in Advanced mode**.
+Set this up via the **pc.0g.ai web UI** (recommended for most teams — [Section 1A](#1a-get-your-0g-api-keys-gui-option)) or via the **0G Compute SDK CLI** ([Section 1B](#1b-get-your-0g-api-keys-cli-option)). Both produce the same `app-sk-…` keys. Then [Section 2](#2-test-your-0g-api-keys) verifies they work.
 
-The walkthrough below uses the **pc.0g.ai** web UI. If you prefer the CLI, expand the section below for the full equivalent flow.
+## 1A. Get your 0G API keys (GUI option)
 
-<details>
-<summary><b>Prefer the CLI?</b> Full equivalent flow using the 0G Compute SDK</summary>
+### A. Create a wallet + deposit
 
-See the [0G Compute TS SDK README](https://github.com/0gfoundation/0g-compute-ts-sdk) for full setup details.
+1. Open [pc.0g.ai](https://pc.0g.ai), connect a wallet and switch to Advanced mode.
+2. Head to the Playground section to browse **AI Models** and pick the providers you'll use. Common picks:
+   - **Chat**: `deepseek/deepseek-chat-v3-0324`, `zai-org/GLM-5-FP8`, or `qwen3.6-plus` (each is a separate provider).
+   - **Speech-to-text**: `openai/whisper-large-v3`.
+   - **Vision / image**: `qwen/qwen3-vl-30b-a3b-instruct`, `z-image`.
+3. Click "Use" on each provider you want, then select "Fund" to deposit 1 0G to that provider's sub-account. **Each model = its own deposit.**
+
+> ⚠️ **Top up small amounts at a time.** Withdrawing funds back out of a provider sub-account takes time, so don't lock up all your 0G upfront — start small and add more only if you need it.
+
+> 💧 **Testing on testnet?** Grab free 0G tokens from the faucet at [faucet.0g.ai](https://faucet.0g.ai) — enough to fund a few provider sub-accounts for development.
+
+### B. Mint per-provider API keys
+
+For every provider you funded, generate its `app-sk-…` token under the API Reference section. **You must mint the key in Advanced mode** — keys generated any other way won't authorize against the proxy.
+
+The provider address is shown on this same page. The token format is `app-sk-<base64(rawMessage:signature)>` — it's bound to that one provider's address. Keep these secret; they're per-account.
+
+### C. Know your endpoint URLs
+
+Each provider lives on a **different `compute-network-N` host**. You can find this listed under the API Reference section. For example:
+
+- Chat (deepseek/GLM): `https://compute-network-1.integratenetwork.work/v1/proxy/chat/completions`
+- Whisper STT: `https://compute-network-16.integratenetwork.work/v1/proxy/audio/transcriptions`
+
+If you hit the wrong host with a key, the proxy returns `400 Provider proxy: validate session: missing or invalid Authorization header`. That error means **wrong key for this host**, not a malformed token.
+
+---
+
+## 1B. Get your 0G API keys (CLI option)
+
+Same end result as Section 1A, but driven from the terminal using the 0G Compute TS SDK. See the [0g-compute-ts-sdk README](https://github.com/0gfoundation/0g-compute-ts-sdk) for full setup details.
 
 Install the SDK CLI globally:
 
@@ -93,37 +124,11 @@ Mint the `app-sk-…` token for the provider:
 0g-compute-cli inference get-secret --provider <PROVIDER_ADDRESS>
 ```
 
-</details>
+---
 
-### A. Create a wallet + deposit
+## 2. Test your 0G API keys
 
-1. Open [pc.0g.ai](https://pc.0g.ai), connect a wallet and switch to Advanced mode.
-2. Head to the Playground section to browse **AI Models** and pick the providers you'll use. Common picks:
-   - **Chat**: `deepseek/deepseek-chat-v3-0324`, `zai-org/GLM-5-FP8`, or `qwen3.6-plus` (each is a separate provider).
-   - **Speech-to-text**: `openai/whisper-large-v3`.
-   - **Vision / image**: `qwen/qwen3-vl-30b-a3b-instruct`, `z-image`.
-3. Click "Use" on each provider you want, then select "Fund" to deposit 1 0G to that provider's sub-account. **Each model = its own deposit.**
-
-> ⚠️ **Top up small amounts at a time.** Withdrawing funds back out of a provider sub-account takes time, so don't lock up all your 0G upfront — start small and add more only if you need it.
-
-> 💧 **Testing on testnet?** Grab free 0G tokens from the faucet at [faucet.0g.ai](https://faucet.0g.ai) — enough to fund a few provider sub-accounts for development.
-
-### B. Mint per-provider API keys
-
-For every provider you funded, generate its `app-sk-…` token under the API Reference section. **You must mint the key in Advanced mode** — keys generated any other way won't authorize against the proxy.
-
-The provider address is shown on this same page. The token format is `app-sk-<base64(rawMessage:signature)>` — it's bound to that one provider's address. Keep these secret; they're per-account.
-
-### C. Know your endpoint URLs
-
-Each provider lives on a **different `compute-network-N` host**. You can find this listed under the API Reference section. For example:
-
-- Chat (deepseek/GLM): `https://compute-network-1.integratenetwork.work/v1/proxy/chat/completions`
-- Whisper STT: `https://compute-network-16.integratenetwork.work/v1/proxy/audio/transcriptions`
-
-If you hit the wrong host with a key, the proxy returns `400 Provider proxy: validate session: missing or invalid Authorization header`. That error means **wrong key for this host**, not a malformed token.
-
-### D. Smoke-test with curl before you write any app code
+Before writing any app code, smoke-test your keys and endpoints with curl:
 
 ```bash
 curl -sS https://compute-network-1.integratenetwork.work/v1/proxy/chat/completions \
@@ -134,11 +139,11 @@ curl -sS https://compute-network-1.integratenetwork.work/v1/proxy/chat/completio
 
 200 with a JSON response = key + deposit + endpoint all good. Anything else, fix it before building.
 
-> Working JS + Python helpers (chat, whisper STT, error handling) are in **[starter-snippets.md](starter-snippets.md)**. Copy them — don't reinvent.
+> Working JS + Python helpers (chat, Whisper STT, error handling) are in **[starter-snippets.md](starter-snippets.md)**. Copy them — don't reinvent.
 
 ---
 
-## 2A. Path A — JS / Static Web App
+## 3A. Path A — JS / Static Web App
 
 ### A. Get the JS starter
 
@@ -215,7 +220,7 @@ git push -u origin main
 
 Your app is now at `https://<your-user>-<your-app>.static.hf.space/` — share that URL during your demo slot. OAuth (`robot.login()`) only works from the deployed `*.static.hf.space` origin, not from localhost.
 
-Once published, see **[Section 3](#3-showcase-your-project)** to get your Space into the official 0G hackathon collection.
+Once published, see **[Section 4](#4-showcase-your-project)** to get your Space into the official 0G hackathon collection.
 
 ### JS gotchas (read these, save hours)
 
@@ -226,7 +231,7 @@ Once published, see **[Section 3](#3-showcase-your-project)** to get your Space 
 
 ---
 
-## 2B. Path B — Python (on-robot)
+## 3B. Path B — Python (on-robot)
 
 ### A. Create and activate a virtualenv
 
@@ -331,7 +336,7 @@ reachy-mini-app-assistant publish
 
 Your app appears at `huggingface.co/spaces/<your-username>/<your-app>`.
 
-Once published, see **[Section 3](#3-showcase-your-project)** to get your Space into the official 0G hackathon collection.
+Once published, see **[Section 4](#4-showcase-your-project)** to get your Space into the official 0G hackathon collection.
 
 ### G. Deploy to the physical robot
 
@@ -347,7 +352,7 @@ mini = ReachyMini(connection_mode="network")
 
 ---
 
-## 3. Showcase your project
+## 4. Showcase your project
 
 Once your Space is published, two short steps get it into the official **0G × Reachy Mini Hackathon** collection on Hugging Face:
 
@@ -365,7 +370,7 @@ Tagged Spaces are also self-discoverable at [huggingface.co/spaces?other=0g-hack
 
 ---
 
-## 4. Using an AI coding agent? Bootstrap instantly
+## 5. Using an AI coding agent? Bootstrap instantly
 
 On **Claude Code, Cursor, Codex, or Copilot**, paste this to get your agent building correctly from the start:
 
