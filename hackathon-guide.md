@@ -26,8 +26,8 @@ Two ways to build a Reachy Mini app. Pick one and stick with it. Most teams shou
 | **Sim** | 3D sim runs in the browser (URDF + Three.js) | MuJoCo desktop sim |
 | **Demo flow** | Open URL on the laptop, connect to robot, run | "Install to Robot" from HF Space, daemon runs it |
 | **Best for** | LLM apps, UIs, voice loops, anything that fits the WebRTC model. **Recommended by upstream Pollen.** | Heavy compute, deterministic control loops, hardware-side state machines |
-| **Starter** | Clone `cduss/webrtc_example` on Hugging Face | `reachy-mini-app-assistant create <name> <path>` |
-| **Reference** | [`gathint/reachy-blocks`](https://huggingface.co/spaces/gathint/reachy-blocks) — Scratch-style builder with 0G chat + Whisper already wired up | [`pollen-robotics/reachy_mini_template_app`](https://huggingface.co/spaces/pollen-robotics/reachy_mini_template_app) |
+| **Starter** | [`starters/js-voice-chat/`](starters/js-voice-chat/) in this repo — single-file voice chat with 0G Compute, Whisper STT, TTS, and a 3D sim. Zero build step. | `reachy-mini-app-assistant create <name> <path>` |
+| **Example app** | [`gathint/reachy-blocks`](https://huggingface.co/spaces/gathint/reachy-blocks) — Scratch-style builder with 0G chat + Whisper, as a polished published reference | [`pollen-robotics/reachy_mini_template_app`](https://huggingface.co/spaces/pollen-robotics/reachy_mini_template_app) |
 
 > Pollen's own [AGENTS.md](https://github.com/pollen-robotics/reachy_mini/blob/main/AGENTS.md) says: **"Default to a JS/Web app unless you explicitly need on-robot Python."** Static HF Spaces are zero-install, mobile-friendly, and the same URL works on any laptop at the venue.
 
@@ -86,16 +86,41 @@ curl -sS https://compute-network-1.integratenetwork.work/v1/proxy/chat/completio
 
 ## 2A. Path A — JS / Static Web App
 
-### A. Clone the template
+### A. Get the JS starter
 
-The canonical JS template is the WebRTC example Space:
+The default JS starter is **[`starters/js-voice-chat/`](starters/js-voice-chat/)** in this repo — a single-file voice chat app with 0G Compute chat, Whisper STT, Web Speech TTS, expressive movement, and a 3D simulator. Zero build step.
+
+Clone this repo, then copy the starter to a fresh directory.
 
 ```bash
-git clone https://huggingface.co/spaces/cduss/webrtc_example my-reachy-app
+git clone https://github.com/0gfoundation/reachy-mini-hackathon
+```
+
+**Linux / macOS:**
+
+```bash
+cp -r reachy-mini-hackathon/starters/js-voice-chat my-reachy-app
+```
+
+**Windows (PowerShell):**
+
+```powershell
+Copy-Item -Recurse reachy-mini-hackathon\starters\js-voice-chat my-reachy-app
+```
+
+Then:
+
+```bash
 cd my-reachy-app
 ```
 
-For a production-grade reference that already wires 0G chat, Whisper STT, TTS, and a 3D simulator — see **[`gathint/reachy-blocks`](https://huggingface.co/spaces/gathint/reachy-blocks)**. Forking that is the fastest way to ship.
+```bash
+git init
+```
+
+See `starters/js-voice-chat/README.md` for run + configure details.
+
+For an example of a polished, published app on this stack, see **[`gathint/reachy-blocks`](https://huggingface.co/spaces/gathint/reachy-blocks)** — a Scratch-style block editor for choreographing Reachy with 0G chat and Whisper already wired in.
 
 ### B. Pin the SDK version
 

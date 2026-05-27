@@ -159,11 +159,13 @@ Notes:
 
 ---
 
-## Reference implementation
+## Starter and example app
 
-A full, shipped application that uses every snippet above (plus a 3D sim, a Scratch-style block editor, share/import, TTS routed through the robot speaker, AI-in-use panel, missing-key warnings) is **[`gathint/reachy-blocks`](https://huggingface.co/spaces/gathint/reachy-blocks)** ([source](https://huggingface.co/spaces/gathint/reachy-blocks/tree/main)). Fork it to get a working baseline; replace the block UI with your own app if you want a different shape.
+For the JS path, the default starting point is **[`starters/js-voice-chat/`](starters/js-voice-chat/)** in this repo — a single-file voice chat app that already wires up `askAI()`, Whisper STT, TTS, expressive movement, and a 3D simulator. Copy it and customize.
 
-Key files to study in that source:
+For an example of what a more polished, published Reachy + 0G app looks like, see **[`gathint/reachy-blocks`](https://huggingface.co/spaces/gathint/reachy-blocks)** ([source](https://huggingface.co/spaces/gathint/reachy-blocks/tree/main)) — a Scratch-style block editor with share/import, TTS routed through the robot speaker, AI-in-use panel, and missing-key warnings.
+
+Key files to study in either:
 - `index.html` → `askAI()`, `listenForSpeech()`, `say()`, `_webmBlobToWav()`, key/provider settings
 - `sim.js` → the in-browser 3D simulator (Three.js + URDF loader)
 
