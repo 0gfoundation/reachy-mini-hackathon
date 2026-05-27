@@ -2,7 +2,7 @@
 
 Copy-paste helpers that hit 0G Compute correctly the first time. Pair these with the [hackathon guide](hackathon-guide.md) and the API key setup (Sections 1A/1B).
 
-> All snippets assume you've completed the hackathon guide's API key setup — **[Section 1A (GUI)](hackathon-guide.md#1a-get-your-0g-api-keys-gui-option)** or **[Section 1B (CLI)](hackathon-guide.md#1b-get-your-0g-api-keys-cli-option)** — and that you've smoke-tested them in **[Section 2](hackathon-guide.md#2-test-your-0g-api-keys)**: funded provider sub-accounts and minted per-provider `app-sk-…` keys.
+> All snippets assume you've completed the hackathon guide's API key setup — **[Section 1: GUI option](hackathon-guide.md#1a-gui-option)** or **[CLI option](hackathon-guide.md#1b-cli-option)** — and that you've smoke-tested them in **[Section 2](hackathon-guide.md#2-test-your-0g-api-keys)**: funded provider sub-accounts and minted per-provider `app-sk-…` keys.
 
 ---
 

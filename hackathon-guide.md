@@ -7,8 +7,7 @@ Works on **Linux, macOS, and native Windows** (no WSL required).
 **Contents:**
 
 - [Pick your path](#-pick-your-path)
-- [1A. Get 0G API keys (GUI)](#1a-get-your-0g-api-keys-gui-option)
-- [1B. Get 0G API keys (CLI)](#1b-get-your-0g-api-keys-cli-option)
+- [1. Get your 0G API keys](#1-get-your-0g-api-keys)
 - [2. Test your 0G API keys](#2-test-your-0g-api-keys)
 - [3A. JS path](#3a-path-a--js--static-web-app)
 - [3B. Python path](#3b-path-b--python-on-robot)
@@ -38,13 +37,15 @@ Skip to **[Section 3A](#3a-path-a--js--static-web-app)** for the JS path, or **[
 
 ---
 
+## 1. Get your 0G API keys
+
 **Getting 0G API keys is the #1 day-of blocker.** 0G's Compute marketplace uses **per-provider API keys** — one `app-sk-…` per model you call. **You must mint the key in Advanced mode**.
 
-Set this up via the **pc.0g.ai web UI** (recommended for most teams — [Section 1A](#1a-get-your-0g-api-keys-gui-option)) or via the **0G Compute SDK CLI** ([Section 1B](#1b-get-your-0g-api-keys-cli-option)). Both produce the same `app-sk-…` keys. Then [Section 2](#2-test-your-0g-api-keys) verifies they work.
+Set this up via the **pc.0g.ai web UI** (recommended for most teams — [GUI option](#1a-gui-option)) or via the **0G Compute SDK CLI** ([CLI option](#1b-cli-option)). Both produce the same `app-sk-…` keys. Then [Section 2](#2-test-your-0g-api-keys) verifies they work.
 
-## 1A. Get your 0G API keys (GUI option)
+### 1A. GUI option
 
-### A. Create a wallet + deposit
+#### Create a wallet + deposit
 
 1. Open [pc.0g.ai](https://pc.0g.ai), connect a wallet and switch to Advanced mode.
 2. Head to the Playground section to browse **AI Models** and pick the providers you'll use. Common picks:
@@ -57,13 +58,13 @@ Set this up via the **pc.0g.ai web UI** (recommended for most teams — [Section
 
 > 💧 **Testing on testnet?** Grab free 0G tokens from the faucet at [faucet.0g.ai](https://faucet.0g.ai) — enough to fund a few provider sub-accounts for development.
 
-### B. Mint per-provider API keys
+#### Mint per-provider API keys
 
 For every provider you funded, generate its `app-sk-…` token under the API Reference section. **You must mint the key in Advanced mode** — keys generated any other way won't authorize against the proxy.
 
 The provider address is shown on this same page. The token format is `app-sk-<base64(rawMessage:signature)>` — it's bound to that one provider's address. Keep these secret; they're per-account.
 
-### C. Know your endpoint URLs
+#### Know your endpoint URLs
 
 Each provider lives on a **different `compute-network-N` host**. You can find this listed under the API Reference section. For example:
 
@@ -72,9 +73,7 @@ Each provider lives on a **different `compute-network-N` host**. You can find th
 
 If you hit the wrong host with a key, the proxy returns `400 Provider proxy: validate session: missing or invalid Authorization header`. That error means **wrong key for this host**, not a malformed token.
 
----
-
-## 1B. Get your 0G API keys (CLI option)
+### 1B. CLI option
 
 Same end result as Section 1A, but driven from the terminal using the 0G Compute TS SDK. See the [0g-compute-ts-sdk README](https://github.com/0gfoundation/0g-compute-ts-sdk) for full setup details.
 
