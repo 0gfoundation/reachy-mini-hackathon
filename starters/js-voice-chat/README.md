@@ -13,18 +13,26 @@ A single-file web app that connects Reachy Mini to 0G decentralized compute for 
 
 ## Quick start
 
-### 1. Get your 0G API key
+### 1. Get your 0G API keys
 
-Go to [pc.0g.ai](https://pc.0g.ai), fund a provider (e.g. `zai-org/GLM-5-FP8`), and mint a key:
+Go to [pc.0g.ai](https://pc.0g.ai), switch to Advanced mode, fund each provider you use, and mint one `app-sk-...` key per provider. Chat and Whisper use different provider keys.
 
-```
+```bash
 0g-compute-cli inference get-secret --provider <PROVIDER_ADDRESS>
 ```
 
 ### 2. Serve locally
 
-```
+Linux / macOS:
+
+```bash
 python3 -m http.server 8765
+```
+
+Windows:
+
+```powershell
+py -m http.server 8765
 ```
 
 ### 3. Open and configure
@@ -35,11 +43,39 @@ The robot (or simulator) will respond to your messages with AI-generated text, s
 
 ## Publish to Hugging Face
 
-Create a **Static** Space at [huggingface.co/new-space](https://huggingface.co/new-space), then:
+Create a **Static** Space at [huggingface.co/new-space](https://huggingface.co/new-space), then initialize git:
 
+```bash
+git init
 ```
-git init && git add .
+
+Stage your files:
+
+```bash
+git add .
+```
+
+Commit:
+
+```bash
+git commit -m "Initial Reachy Mini app"
+```
+
+Make sure the branch is named `main`:
+
+```bash
+git branch -M main
+```
+
+Set the Space remote:
+
+```bash
 git remote add origin https://huggingface.co/spaces/YOUR_USER/YOUR_APP
+```
+
+Push:
+
+```bash
 git push -u origin main
 ```
 
