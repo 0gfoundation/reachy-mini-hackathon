@@ -696,7 +696,7 @@ body::after {
     <div class="field-group">
       <label>API Key</label>
       <input id="cfg-chat-key" type="password" placeholder="app-sk-..." spellcheck="false" />
-      <div class="field-hint">From <code>0g-compute-cli inference get-secret --provider &lt;ADDR&gt;</code></div>
+      <div class="field-hint">From the provider's API Reference page or <code>0g-compute-cli inference get-secret --provider &lt;ADDR&gt;</code></div>
     </div>
 
     <div class="field-group">
@@ -746,7 +746,7 @@ body::after {
       <div class="field-group stt-fields" style="display:none;">
         <label>Whisper Key</label>
         <input id="cfg-stt-key" type="password" placeholder="app-sk-..." />
-        <div class="field-hint">Only needed in Direct mode — Router uses the same key</div>
+        <div class="field-hint">Use the app-sk key minted for the Whisper provider</div>
       </div>
       <div class="field-group">
         <label>Whisper Endpoint</label>
@@ -866,7 +866,7 @@ window.ReachySim = ReachySim;
 
 <!-- ── SDK ── -->
 <script type="module">
-import { ReachyMini } from 'https://cdn.jsdelivr.net/gh/pollen-robotics/reachy_mini@v1.7.1/js/reachy-mini.js';
+import { ReachyMini } from 'https://cdn.jsdelivr.net/npm/@pollen-robotics/reachy-mini-sdk@1.8.0/+esm';
 window.ReachyMini = ReachyMini;
 </script>
 
@@ -997,8 +997,13 @@ window.startApp = async function () {
   // Save settings for reload
   sessionStorage.setItem('reachy-cfg', JSON.stringify(CFG));
 
+  try {
+    await initRobot();
+  } catch (e) {
+    return showErr('Robot connection failed — ' + e.message);
+  }
+
   document.getElementById('setup').classList.add('hidden');
-  await initRobot();
   addMsg('system', `Connected via ${CFG.mode === 'sim' ? 'simulator' : 'WebRTC'}. Say something.`);
   setStatus('connected', true);
   const pb = document.getElementById('powered-by');
@@ -1021,14 +1026,27 @@ async function initRobot() {
     robot = new window.ReachyMini();
     const params = new URLSearchParams(location.search);
     const hfToken = params.get('hf');
-    if (hfToken) {
-      await robot.connect(hfToken);
-    } else {
-      try { await robot.login(); } catch (_) { await robot.connect(); }
-    }
-    await robot.startSession();
-    await robot.ensureAwake();
     robot.attachVideo(document.getElementById('remoteVideo'));
+    if (typeof robot.autoConnect === 'function') {
+      if (!hfToken && typeof robot.authenticate === 'function' && !await robot.authenticate()) {
+        await robot.login();
+        throw new Error('Redirecting to Hugging Face login.');
+      }
+      await robot.autoConnect({
+        token: hfToken || undefined,
+        pickRobot: pickRobotFromList,
+      });
+    } else {
+      if (hfToken) {
+        await robot.connect(hfToken);
+      } else {
+        if (!await robot.authenticate()) { await robot.login(); return; }
+        await robot.connect();
+      }
+      const robotId = await waitForRobotChoice(robot);
+      await robot.startSession(robotId);
+      await robot.ensureAwake();
+    }
   } else {
     isLive = false;
     robot = new window.ReachySim(document.getElementById('sim-container'));
@@ -1038,6 +1056,41 @@ async function initRobot() {
     });
     await robot.wakeUp();
   }
+}
+
+async function waitForRobotChoice(robot) {
+  const robots = robot.robots?.length
+    ? robot.robots
+    : await new Promise((resolve, reject) => {
+        const timeout = setTimeout(() => {
+          robot.removeEventListener('robotsChanged', onRobotsChanged);
+          reject(new Error('No robot found. Check Wi-Fi and Hugging Face access.'));
+        }, 8000);
+        function onRobotsChanged(e) {
+          const list = e.detail?.robots || [];
+          if (!list.length) return;
+          clearTimeout(timeout);
+          robot.removeEventListener('robotsChanged', onRobotsChanged);
+          resolve(list);
+        }
+        robot.addEventListener('robotsChanged', onRobotsChanged);
+      });
+  const picked = pickRobotFromList(robots);
+  if (!picked) throw new Error('Robot selection cancelled.');
+  return picked;
+}
+
+function pickRobotFromList(robots) {
+  const available = robots.filter(r => !r.busy);
+  if (available.length === 1) return available[0].id;
+  if (!available.length) throw new Error('No idle robot is available.');
+  const menu = available
+    .map((r, i) => `${i + 1}. ${r.name || r.meta?.name || r.id}`)
+    .join('\n');
+  const answer = prompt(`Choose a robot:\n${menu}`, '1');
+  if (answer === null) return null;
+  const index = Number(answer) - 1;
+  return available[index]?.id || null;
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -1173,9 +1226,10 @@ async function startRecording() {
     if (isLive) {
       const vid = document.getElementById('remoteVideo');
       const robotAudio = vid?.srcObject?.getAudioTracks?.() || [];
-      stream = robotAudio.length
-        ? new MediaStream(robotAudio)
-        : await navigator.mediaDevices.getUserMedia({ audio: true });
+      if (!robotAudio.length) {
+        throw new Error('Robot audio track is not ready yet. Wait for the live stream, then try again.');
+      }
+      stream = new MediaStream(robotAudio);
     } else {
       stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     }

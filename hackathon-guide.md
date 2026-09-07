@@ -127,13 +127,24 @@ Mint the `app-sk-…` token for the provider:
 
 ## 2. Test your 0G API keys
 
-Before writing any app code, smoke-test your keys and endpoints with curl:
+Before writing any app code, smoke-test your keys and endpoints with curl.
+
+**Linux / macOS:**
 
 ```bash
-curl -sS https://compute-network-1.integratenetwork.work/v1/proxy/chat/completions \
-  -H "Authorization: Bearer $OG_CHAT_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"model":"zai-org/GLM-5-FP8","messages":[{"role":"user","content":"hi"}],"max_tokens":5}'
+curl -sS https://compute-network-1.integratenetwork.work/v1/proxy/chat/completions -H "Authorization: Bearer $OG_CHAT_KEY" -H "Content-Type: application/json" -d '{"model":"zai-org/GLM-5-FP8","messages":[{"role":"user","content":"hi"}],"max_tokens":5}'
+```
+
+**Windows (PowerShell):**
+
+```powershell
+curl.exe -sS https://compute-network-1.integratenetwork.work/v1/proxy/chat/completions -H "Authorization: Bearer $env:OG_CHAT_KEY" -H "Content-Type: application/json" -d '{"model":"zai-org/GLM-5-FP8","messages":[{"role":"user","content":"hi"}],"max_tokens":5}'
+```
+
+**Windows (cmd):**
+
+```cmd
+curl.exe -sS https://compute-network-1.integratenetwork.work/v1/proxy/chat/completions -H "Authorization: Bearer %OG_CHAT_KEY%" -H "Content-Type: application/json" -d "{\"model\":\"zai-org/GLM-5-FP8\",\"messages\":[{\"role\":\"user\",\"content\":\"hi\"}],\"max_tokens\":5}"
 ```
 
 200 with a JSON response = key + deposit + endpoint all good. Anything else, fix it before building.
@@ -182,38 +193,71 @@ For an example of a polished, published app on this stack, see **[`gathint/reach
 
 ### B. Pin the SDK version
 
-In `index.html`, the SDK is imported from jsdelivr. **Pin to a version tag**, never `@main`:
+In `index.html`, the SDK is imported from jsdelivr. **Pin to an exact npm package version**, never `@latest` or a moving major tag:
 
 ```html
-<script type="module">
-  import { ReachyMini } from "https://cdn.jsdelivr.net/gh/pollen-robotics/reachy_mini@v1.7.1/js/reachy-mini.js";
-</script>
+<script type="module">import { ReachyMini } from "https://cdn.jsdelivr.net/npm/@pollen-robotics/reachy-mini-sdk@1.8.0/+esm";</script>
 ```
 
-Check the latest tag: `git ls-remote --tags https://github.com/pollen-robotics/reachy_mini | grep -E 'v[0-9]' | tail`.
+Check the latest published npm version:
+
+```bash
+npm view @pollen-robotics/reachy-mini-sdk version
+```
 
 ### C. Local dev
 
-Serve over HTTP (not `file://`):
+Serve over HTTP (not `file://`).
+
+**Linux / macOS:**
 
 ```bash
 python3 -m http.server 8765
 ```
 
-Open `http://localhost:8765/?hf=<your-read-token>`. **Important:** the JS SDK does **not** auto-read the `?hf=` URL param — `authenticate()` only checks OAuth callbacks and sessionStorage. You must parse it yourself and pass to `robot.connect(token)`. Reachy Blocks has this pattern; copy it.
+**Windows (PowerShell / cmd):**
+
+```powershell
+py -m http.server 8765
+```
+
+Open `http://localhost:8765/?hf=<your-read-token>`. For live robot mode, use the SDK's `autoConnect()` helper or an explicit robot picker before starting a session. The starter in this repo already does this.
 
 ### D. Run against the on-stage robot
 
-When connected to venue Wi-Fi, the SDK auto-discovers the robot via the relay. The same code runs against the on-stage Wireless without changes.
+When connected to venue Wi-Fi, the SDK can list reachable robots through the relay. Your app must select one idle robot, then start the session. If only one idle robot is available, `autoConnect()` can select it automatically.
 
 ### E. Publish to a HF Space (do this day one)
 
 > **Why required:** your Space stays live after the event — judges revisit, organizers showcase winners, and you keep a portfolio piece. It also unlocks one-click install on the robot and OAuth (`robot.login()`), which only works from `*.static.hf.space`.
 
-Create a static Space at https://huggingface.co/new-space (SDK: Static), then:
+Create a static Space at https://huggingface.co/new-space (SDK: Static), then stage your app:
 
 ```bash
-git remote set-url origin https://huggingface.co/spaces/<your-user>/<your-app>
+git add .
+```
+
+Commit it:
+
+```bash
+git commit -m "Initial Reachy Mini app"
+```
+
+Make sure the branch is named `main`:
+
+```bash
+git branch -M main
+```
+
+Set the Space remote:
+
+```bash
+git remote add origin https://huggingface.co/spaces/<your-user>/<your-app>
+```
+
+Push your app:
+
+```bash
 git push -u origin main
 ```
 
@@ -319,13 +363,25 @@ reachy-mini-app-assistant check
 >
 > **Why required:** your Space stays live after the event — judges revisit, organizers showcase winners, and you keep a portfolio piece. It also unlocks the dashboard's one-click "Install to Robot" flow.
 
-Log in with your token:
+Log in with your token.
+
+**Linux / macOS:**
 
 ```bash
 hf auth login --token $HF_TOKEN --add-to-git-credential
 ```
 
-(Windows PowerShell: `$env:HF_TOKEN`; Windows cmd: `%HF_TOKEN%`.)
+**Windows (PowerShell):**
+
+```powershell
+hf auth login --token $env:HF_TOKEN --add-to-git-credential
+```
+
+**Windows (cmd):**
+
+```cmd
+hf auth login --token %HF_TOKEN% --add-to-git-credential
+```
 
 Then from your app directory:
 
